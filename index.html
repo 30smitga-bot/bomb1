@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+</head>
+
+<body>
+
+<a-scene background="color:#111">
+
+  <!-- VR camera + cursor -->
+  <a-camera
+    position="0 1.6 0"
+    look-controls
+    cursor="fuse:true; fuseTimeout:700"
+    raycaster="objects:.obj">
+
+    <a-cursor
+      color="white"
+      geometry="primitive:ring;radiusInner:.01;radiusOuter:.018"
+      position="0 0 -1">
+    </a-cursor>
+
+  </a-camera>
+
+  <!-- Balls -->
+  <a-entity id="objects"></a-entity>
+
+</a-scene>
+
+<script>
+
+const box = document.querySelector("#objects");
+let balls = [];
+
+// Randomly choose one ball to be the bomb
+const bomb = Math.floor(Math.random() * 15);
+
+for(let i = 0; i < 15; i++){
+
+  let ball = document.createElement("a-sphere");
+
+  ball.classList.add("obj");
+
+  ball.setAttribute("radius", ".3");
+
+  ball.setAttribute(
+    "position",
+    `${Math.random()*12-6} ${Math.random()*3+1} ${-Math.random()*8-2}`
+  );
+
+  // Bomb is red, safe balls are green
+  ball.setAttribute(
+    "color",
+    i === bomb ? "red" : "lime"
+  );
+
+  // Look at the ball
+  ball.addEventListener("mouseenter", () => {
+
+    if(i === bomb){
+
+      // Bomb: remove it and restart
+      ball.remove();
+
+      setTimeout(() => location.reload(), 500);
+
+    } else {
+
+      // Safe ball disappears
+      ball.remove();
+
+    }
+
+  });
+
+  // Every ball has a different speed AND direction
+  const speed = 0.01 + Math.random() * 0.05;
+
+  balls.push({
+
+    el: ball,
+
+    dx: (Math.random() - 0.5) * speed,
+    dy: (Math.random() - 0.5) * speed,
+    dz: (Math.random() - 0.5) * speed
+
+  });
+
+  box.appendChild(ball);
+}
+
+
+// Move all balls independently
+function moveBalls(){
+
+  balls.forEach(ball => {
+
+    if(!ball.el.parentNode) return;
+
+    let p = ball.el.object3D.position;
+
+    p.x += ball.dx;
+    p.y += ball.dy;
+    p.z += ball.dz;
+
+    // Bounce off boundaries
+    if(p.x > 7 || p.x < -7)
+      ball.dx *= -1;
+
+    if(p.y > 4 || p.y < 1)
+      ball.dy *= -1;
+
+    if(p.z > 0 || p.z < -10)
+      ball.dz *= -1;
+
+  });
+
+  requestAnimationFrame(moveBalls);
+}
+
+moveBalls();
+
+</script>
+
+</body>
+</html>
