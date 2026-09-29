@@ -8,7 +8,7 @@
 
 <a-scene background="color:#111">
 
-  <!-- VR camera + cursor -->
+  
   <a-camera
     position="0 1.6 0"
     look-controls
@@ -33,7 +33,7 @@
 const box = document.querySelector("#objects");
 let balls = [];
 
-// Randomly choose one ball to be the bomb
+
 const bomb = Math.floor(Math.random() * 15);
 
 for(let i = 0; i < 15; i++){
@@ -49,32 +49,32 @@ for(let i = 0; i < 15; i++){
     `${Math.random()*12-6} ${Math.random()*3+1} ${-Math.random()*8-2}`
   );
 
-  // Bomb is red, safe balls are green
+  
   ball.setAttribute(
     "color",
     i === bomb ? "red" : "lime"
   );
 
-  // Look at the ball
+  
   ball.addEventListener("mouseenter", () => {
 
     if(i === bomb){
 
-      // Bomb: remove it and restart
+      
       ball.remove();
 
       setTimeout(() => location.reload(), 500);
 
     } else {
 
-      // Safe ball disappears
+      
       ball.remove();
 
     }
 
   });
 
-  // Every ball has a different speed AND direction
+  
   const speed = 0.01 + Math.random() * 0.05;
 
   balls.push({
@@ -91,7 +91,7 @@ for(let i = 0; i < 15; i++){
 }
 
 
-// Move all balls independently
+
 function moveBalls(){
 
   balls.forEach(ball => {
@@ -104,7 +104,7 @@ function moveBalls(){
     p.y += ball.dy;
     p.z += ball.dz;
 
-    // Bounce off boundaries
+    
     if(p.x > 7 || p.x < -7)
       ball.dx *= -1;
 
